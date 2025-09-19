@@ -9,7 +9,7 @@ export type {
   BuscaVeiculo,
 } from "@/lib/schemas";
 
-export interface VeiculoFormData extends Omit<Veiculo, "id" | "dataCadastro"> {}
+export type VeiculoFormData = Omit<Veiculo, "id" | "dataCadastro">;
 
 export interface VeiculoListItem extends Veiculo {
   categoriaNome?: string;

@@ -198,7 +198,7 @@ export function CategoriasContent() {
           <DialogHeader>
             <DialogTitle>Editar Categoria</DialogTitle>
             <DialogDescription>
-              Altere os dados da categoria "{categoriaEditando?.nome}".
+              Altere os dados da categoria &quot;{categoriaEditando?.nome}&quot;.
             </DialogDescription>
           </DialogHeader>
           {categoriaEditando && (

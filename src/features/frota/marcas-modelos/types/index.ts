@@ -7,9 +7,9 @@ export type {
   BuscaMarcaModelo,
 } from "@/lib/schemas";
 
-export interface MarcaVeiculoFormData extends Omit<MarcaVeiculo, "id" | "dataCadastro"> {}
+export type MarcaVeiculoFormData = Omit<MarcaVeiculo, "id" | "dataCadastro">;
 
-export interface ModeloVeiculoFormData extends Omit<ModeloVeiculo, "id" | "dataCadastro"> {}
+export type ModeloVeiculoFormData = Omit<ModeloVeiculo, "id" | "dataCadastro">;
 
 export interface MarcaVeiculoListItem extends MarcaVeiculo {
   totalModelos?: number;

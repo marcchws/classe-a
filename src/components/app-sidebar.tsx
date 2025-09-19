@@ -222,7 +222,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             <SubIcon className="h-4 w-4" />
                             {subItem.title}
                           </div>
-                          {subItem.items.map((nestedItem: { title: string; url: string; icon: any }) => {
+                          {subItem.items.map((nestedItem: { title: string; url: string; icon: React.ElementType }) => {
                             const NestedIcon = nestedItem.icon
                             return (
                               <SidebarMenuItem key={nestedItem.title} className="ml-4">

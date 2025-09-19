@@ -196,7 +196,7 @@ export function ModeloForm({
           <CardContent className="space-y-4">
             {fields.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4">
-                Nenhum item de manutenção adicionado. Clique em "Adicionar Item" para começar.
+                Nenhum item de manutenção adicionado. Clique em &quot;Adicionar Item&quot; para começar.
               </p>
             )}
 

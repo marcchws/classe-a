@@ -121,7 +121,7 @@ const mockVeiculos: VeiculoListItem[] = [
   }
 ];
 
-let veiculos = [...mockVeiculos];
+const veiculos = [...mockVeiculos];
 
 export const veiculoService = {
   async listar(filtros: BuscaVeiculo = {}): Promise<{

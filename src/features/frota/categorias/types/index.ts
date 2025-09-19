@@ -4,9 +4,7 @@ export type {
   BuscaCategoriaVeiculo,
 } from "@/lib/schemas";
 
-export interface CategoriaVeiculoFormData extends Omit<CategoriaVeiculo, "id" | "dataCadastro"> {
-  // Form-specific fields can be added here if needed
-}
+export type CategoriaVeiculoFormData = Omit<CategoriaVeiculo, "id" | "dataCadastro">;
 
 export interface CategoriaVeiculoListItem extends CategoriaVeiculo {
   totalVeiculos?: number;

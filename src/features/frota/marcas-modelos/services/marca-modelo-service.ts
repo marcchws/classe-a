@@ -87,8 +87,8 @@ const mockModelos: ModeloVeiculoListItem[] = [
   }
 ];
 
-let marcas = [...mockMarcas];
-let modelos = [...mockModelos];
+const marcas = [...mockMarcas];
+const modelos = [...mockModelos];
 
 export const marcaModeloService = {
   // CRUD Marcas
