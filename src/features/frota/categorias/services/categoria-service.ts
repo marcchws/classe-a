@@ -45,7 +45,7 @@ const mockCategorias: CategoriaVeiculoListItem[] = [
 const categorias = [...mockCategorias];
 
 export const categoriaService = {
-  async listar(filtros: BuscaCategoriaVeiculo = {}): Promise<{
+  async listar(filtros: Partial<BuscaCategoriaVeiculo> = {}): Promise<{
     dados: CategoriaVeiculoListItem[];
     total: number;
     totalPaginas: number;
@@ -90,10 +90,13 @@ export const categoriaService = {
   async criar(dados: CategoriaVeiculoFormData): Promise<CategoriaVeiculo> {
     await new Promise(resolve => setTimeout(resolve, 800));
 
-    const novaCategoria: CategoriaVeiculo = {
+    const novaCategoria: CategoriaVeiculoListItem = {
       id: Math.random().toString(36).substr(2, 9),
-      ...dados,
-      dataCadastro: new Date().toISOString()
+      nome: dados.nome,
+      descricao: dados.descricao,
+      status: dados.status,
+      dataCadastro: new Date().toISOString(),
+      totalVeiculos: 0
     };
 
     categorias.push(novaCategoria);
@@ -139,12 +142,13 @@ export const categoriaService = {
 
     // Em uma implementação real, aqui seria feito o parsing do CSV
     // Por ora, retornamos um resultado simulado
-    const novaCategoria: CategoriaVeiculo = {
+    const novaCategoria: CategoriaVeiculoListItem = {
       id: Math.random().toString(36).substr(2, 9),
       nome: "Categoria Importada",
       descricao: "Categoria criada via importação CSV",
       status: "ATIVO",
-      dataCadastro: new Date().toISOString()
+      dataCadastro: new Date().toISOString(),
+      totalVeiculos: 0
     };
 
     categorias.push(novaCategoria);

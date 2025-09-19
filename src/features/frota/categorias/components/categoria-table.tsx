@@ -153,7 +153,7 @@ export function CategoriaTable({
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(categoria.id || "")}
+                onClick={() => navigator.clipboard.writeText(categoria.id ?? "")}
               >
                 Copiar ID
               </DropdownMenuItem>

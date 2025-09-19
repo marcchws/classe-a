@@ -23,12 +23,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { categoriaVeiculoSchema } from "@/lib/schemas"
-import type { CategoriaVeiculoFormData, CategoriaVeiculo } from "../types"
+import { z } from "zod"
+import type { CategoriaVeiculo } from "../types"
+
+// Schema específico para o formulário
+const categoriaFormSchema = z.object({
+  nome: z.string().min(1, "Nome da categoria eh obrigatorio"),
+  descricao: z.string().min(1, "Descricao da categoria eh obrigatoria"),
+  status: z.enum(["ATIVO", "INATIVO"]),
+});
+
+type CategoriaFormData = z.infer<typeof categoriaFormSchema>;
 
 interface CategoriaFormProps {
   categoria?: CategoriaVeiculo
-  onSubmit: (dados: CategoriaVeiculoFormData) => Promise<void>
+  onSubmit: (dados: CategoriaFormData) => Promise<void>
   onCancel: () => void
   isLoading?: boolean
 }
@@ -39,8 +48,8 @@ export function CategoriaForm({
   onCancel,
   isLoading = false,
 }: CategoriaFormProps) {
-  const form = useForm<CategoriaVeiculoFormData>({
-    resolver: zodResolver(categoriaVeiculoSchema.omit({ id: true, dataCadastro: true })),
+  const form = useForm<CategoriaFormData>({
+    resolver: zodResolver(categoriaFormSchema),
     defaultValues: {
       nome: categoria?.nome || "",
       descricao: categoria?.descricao || "",
@@ -48,7 +57,7 @@ export function CategoriaForm({
     },
   })
 
-  const handleSubmit = async (dados: CategoriaVeiculoFormData) => {
+  const handleSubmit = async (dados: CategoriaFormData) => {
     try {
       await onSubmit(dados)
       if (!categoria) {

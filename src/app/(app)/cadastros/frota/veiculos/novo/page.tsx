@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { ArrowLeft, Save, Car } from "lucide-react";
-import { veiculoSchema, Veiculo } from "@/lib/schemas";
+import { z } from "zod";
 import Link from "next/link";
 
 export default function NovoVeiculoPage() {
@@ -43,8 +43,48 @@ export default function NovoVeiculoPage() {
     { id: "5", marcaId: "2", nome: "X7" },
   ];
 
-  const form = useForm<Veiculo>({
-    resolver: zodResolver(veiculoSchema),
+  // Schema específico para o formulário sem valores padrão
+  const veiculoFormSchema = z.object({
+    categoriaId: z.string().min(1, "Categoria do veiculo eh obrigatoria"),
+    marcaId: z.string().min(1, "Marca do veiculo eh obrigatoria"),
+    modeloId: z.string().min(1, "Modelo do veiculo eh obrigatorio"),
+    versao: z.string().min(1, "Versao do veiculo eh obrigatoria"),
+    tipoCombustivel: z.enum(["GASOLINA", "ETANOL", "DIESEL", "HIBRIDO", "ELETRICO"]),
+    cor: z.string().min(1, "Cor do veiculo eh obrigatoria"),
+    capacidadePassageiros: z.number().min(1, "Capacidade de passageiros deve ser positiva"),
+    placa: z.string().regex(/^[A-Z]{3}-?\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/, "Placa deve estar no formato ABC-1234 ou ABC1D23").optional(),
+    blindagem: z.object({
+      temBlindagem: z.boolean(),
+      valor: z.number().min(0).optional(),
+      parcelado: z.boolean(),
+      numeroParcelas: z.number().min(1).optional(),
+    }),
+    transformacoesEspeciais: z.string().optional(),
+    outrosAcessorios: z.array(z.string()).optional(),
+    entrada: z.number().min(0, "Valor de entrada deve ser positivo"),
+    valorTotalCompra: z.number().min(0, "Valor total de compra deve ser positivo"),
+    modalidadeCompra: z.enum(["A_VISTA", "FINANCIAMENTO", "LEASING", "CONSORCIO"]),
+    financiamento: z.object({
+      numeroParcelas: z.number().min(1),
+      taxaJuros: z.number().min(0),
+      valorTotalComJuros: z.number().min(0),
+      parcelasPagas: z.number().min(0),
+      parcelasPendentes: z.number().min(0),
+    }).optional(),
+    kmAtual: z.number().min(0, "KM atual deve ser positivo"),
+    capacidadeTanque: z.number().min(0, "Capacidade do tanque deve ser positiva"),
+    detalhesManutencao: z.array(z.object({
+      tipo: z.string(),
+      proximaManutencaoData: z.string().optional(),
+      descricao: z.string().optional(),
+    })).optional(),
+    status: z.enum(["DISPONIVEL", "ALUGADO", "MANUTENCAO", "INDISPONIVEL"]),
+  });
+
+  type VeiculoFormData = z.infer<typeof veiculoFormSchema>;
+
+  const form = useForm<VeiculoFormData>({
+    resolver: zodResolver(veiculoFormSchema),
     defaultValues: {
       categoriaId: "",
       marcaId: "",
@@ -75,7 +115,7 @@ export default function NovoVeiculoPage() {
 
   const modelosFiltrados = modelos.filter(modelo => modelo.marcaId === marcaSelecionada);
 
-  const onSubmit = async (data: Veiculo) => {
+  const onSubmit = async (data: VeiculoFormData) => {
     setIsLoading(true);
     try {
       console.log("Dados do veículo:", data);

@@ -1,4 +1,4 @@
-export type {
+import type {
   Veiculo,
   TipoCombustivel,
   ModalidadeCompra,
@@ -8,6 +8,17 @@ export type {
   ManutencaoVeiculo,
   BuscaVeiculo,
 } from "@/lib/schemas";
+
+export type {
+  Veiculo,
+  TipoCombustivel,
+  ModalidadeCompra,
+  StatusVeiculo,
+  Financiamento,
+  Blindagem,
+  ManutencaoVeiculo,
+  BuscaVeiculo,
+};
 
 export type VeiculoFormData = Omit<Veiculo, "id" | "dataCadastro">;
 

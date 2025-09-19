@@ -23,12 +23,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { marcaVeiculoSchema } from "@/lib/schemas"
+import { z } from "zod"
 import type { MarcaVeiculoFormData, MarcaVeiculo } from "../types"
+
+// Schema específico para o formulário
+const marcaFormSchema = z.object({
+  nome: z.string().min(1, "Nome da marca eh obrigatorio"),
+  observacao: z.string().optional(),
+  status: z.enum(["ATIVO", "INATIVO"]),
+});
+
+type MarcaFormData = z.infer<typeof marcaFormSchema>;
 
 interface MarcaFormProps {
   marca?: MarcaVeiculo
-  onSubmit: (dados: MarcaVeiculoFormData) => Promise<void>
+  onSubmit: (dados: MarcaFormData) => Promise<void>
   onCancel: () => void
   isLoading?: boolean
 }
@@ -39,8 +48,8 @@ export function MarcaForm({
   onCancel,
   isLoading = false,
 }: MarcaFormProps) {
-  const form = useForm<MarcaVeiculoFormData>({
-    resolver: zodResolver(marcaVeiculoSchema.omit({ id: true, dataCadastro: true })),
+  const form = useForm<MarcaFormData>({
+    resolver: zodResolver(marcaFormSchema),
     defaultValues: {
       nome: marca?.nome || "",
       observacao: marca?.observacao || "",
@@ -48,7 +57,7 @@ export function MarcaForm({
     },
   })
 
-  const handleSubmit = async (dados: MarcaVeiculoFormData) => {
+  const handleSubmit = async (dados: MarcaFormData) => {
     try {
       await onSubmit(dados)
       if (!marca) {

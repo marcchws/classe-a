@@ -258,7 +258,7 @@ export default function VeiculosPage() {
                 <SelectItem value="INDISPONIVEL">Indisponível</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={filtroBlindagem} onValueChange={setFiltroBlindagem}>
+            <Select value={filtroBlindagem} onValueChange={(value) => setFiltroBlindagem(value as "all" | "true" | "false")}>
               <SelectTrigger className="w-full lg:w-40">
                 <SelectValue placeholder="Blindagem" />
               </SelectTrigger>

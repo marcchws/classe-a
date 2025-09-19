@@ -25,13 +25,30 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { modeloVeiculoSchema } from "@/lib/schemas"
+import { z } from "zod"
 import type { ModeloVeiculoFormData, ModeloVeiculo, MarcaVeiculo } from "../types"
+
+// Schema específico para o formulário
+const modeloFormSchema = z.object({
+  marcaId: z.string().min(1, "Marca eh obrigatoria"),
+  nome: z.string().min(1, "Nome do modelo eh obrigatorio"),
+  observacao: z.string().optional(),
+  status: z.enum(["ATIVO", "INATIVO"]),
+  itensManutencao: z.array(z.object({
+    nome: z.string().min(1, "Nome do item eh obrigatorio"),
+    tipo: z.enum(["QUILOMETRAGEM", "TEMPO"]),
+    valor: z.number().min(1, "Valor deve ser positivo"),
+    descricao: z.string().optional(),
+    id: z.string().optional(),
+  })).optional(),
+});
+
+type ModeloFormData = z.infer<typeof modeloFormSchema>;
 
 interface ModeloFormProps {
   modelo?: ModeloVeiculo
   marcas: MarcaVeiculo[]
-  onSubmit: (dados: ModeloVeiculoFormData) => Promise<void>
+  onSubmit: (dados: ModeloFormData) => Promise<void>
   onCancel: () => void
   isLoading?: boolean
 }
@@ -43,14 +60,14 @@ export function ModeloForm({
   onCancel,
   isLoading = false,
 }: ModeloFormProps) {
-  const form = useForm<ModeloVeiculoFormData>({
-    resolver: zodResolver(modeloVeiculoSchema.omit({ id: true, dataCadastro: true })),
+  const form = useForm<ModeloFormData>({
+    resolver: zodResolver(modeloFormSchema),
     defaultValues: {
       marcaId: modelo?.marcaId || "",
       nome: modelo?.nome || "",
       observacao: modelo?.observacao || "",
       status: modelo?.status || "ATIVO",
-      itensManutencao: modelo?.itensManutencao || [],
+      itensManutencao: [],
     },
   })
 
@@ -59,7 +76,7 @@ export function ModeloForm({
     name: "itensManutencao",
   })
 
-  const handleSubmit = async (dados: ModeloVeiculoFormData) => {
+  const handleSubmit = async (dados: ModeloFormData) => {
     try {
       await onSubmit(dados)
       if (!modelo) {

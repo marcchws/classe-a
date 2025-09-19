@@ -25,8 +25,8 @@ import { MarcaForm } from "./marca-form"
 import { ModeloForm } from "./modelo-form"
 import { marcaModeloService } from "../services/marca-modelo-service"
 import type {
-  MarcaVeiculo,
-  ModeloVeiculo,
+  MarcaVeiculoListItem,
+  ModeloVeiculoListItem,
   MarcaVeiculoFormData,
   ModeloVeiculoFormData,
   BuscaMarcaModelo
@@ -34,8 +34,8 @@ import type {
 
 export function MarcasModelosContent() {
   const [activeTab, setActiveTab] = React.useState("marcas")
-  const [marcas, setMarcas] = React.useState<MarcaVeiculo[]>([])
-  const [modelos, setModelos] = React.useState<ModeloVeiculo[]>([])
+  const [marcas, setMarcas] = React.useState<MarcaVeiculoListItem[]>([])
+  const [modelos, setModelos] = React.useState<ModeloVeiculoListItem[]>([])
   const [isLoading, setIsLoading] = React.useState(false)
   const [isCreateMarcaOpen, setIsCreateMarcaOpen] = React.useState(false)
   const [isCreateModeloOpen, setIsCreateModeloOpen] = React.useState(false)

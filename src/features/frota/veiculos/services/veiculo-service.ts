@@ -71,7 +71,8 @@ const mockVeiculos: VeiculoListItem[] = [
     capacidadePassageiros: 5,
     placa: "XYZ-5678",
     blindagem: {
-      temBlindagem: false
+      temBlindagem: false,
+      parcelado: false
     },
     entrada: 80000,
     valorTotalCompra: 320000,
@@ -97,7 +98,8 @@ const mockVeiculos: VeiculoListItem[] = [
     capacidadePassageiros: 5,
     placa: "HIL-9876",
     blindagem: {
-      temBlindagem: false
+      temBlindagem: false,
+      parcelado: false
     },
     entrada: 35000,
     valorTotalCompra: 180000,
@@ -124,7 +126,7 @@ const mockVeiculos: VeiculoListItem[] = [
 const veiculos = [...mockVeiculos];
 
 export const veiculoService = {
-  async listar(filtros: BuscaVeiculo = {}): Promise<{
+  async listar(filtros: BuscaVeiculo = { pagina: 1, limite: 10 }): Promise<{
     dados: VeiculoListItem[];
     total: number;
     totalPaginas: number;
@@ -258,7 +260,7 @@ export const veiculoService = {
       cor: "Importado",
       capacidadePassageiros: 5,
       placa: "IMP-2024",
-      blindagem: { temBlindagem: false },
+      blindagem: { temBlindagem: false, parcelado: false },
       entrada: 30000,
       valorTotalCompra: 90000,
       modalidadeCompra: "A_VISTA",

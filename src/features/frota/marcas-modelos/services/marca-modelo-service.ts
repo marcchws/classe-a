@@ -92,7 +92,7 @@ const modelos = [...mockModelos];
 
 export const marcaModeloService = {
   // CRUD Marcas
-  async listarMarcas(filtros: BuscaMarcaModelo = {}): Promise<{
+  async listarMarcas(filtros: Partial<BuscaMarcaModelo> = {}): Promise<{
     dados: MarcaVeiculoListItem[];
     total: number;
     totalPaginas: number;
@@ -136,10 +136,13 @@ export const marcaModeloService = {
   async criarMarca(dados: MarcaVeiculoFormData): Promise<MarcaVeiculo> {
     await new Promise(resolve => setTimeout(resolve, 800));
 
-    const novaMarca: MarcaVeiculo = {
+    const novaMarca: MarcaVeiculoListItem = {
       id: Math.random().toString(36).substr(2, 9),
-      ...dados,
-      dataCadastro: new Date().toISOString()
+      nome: dados.nome,
+      observacao: dados.observacao,
+      status: dados.status,
+      dataCadastro: new Date().toISOString(),
+      totalModelos: 0
     };
 
     marcas.push(novaMarca);
@@ -180,7 +183,7 @@ export const marcaModeloService = {
   },
 
   // CRUD Modelos
-  async listarModelos(filtros: BuscaMarcaModelo = {}): Promise<{
+  async listarModelos(filtros: BuscaMarcaModelo = { pagina: 1, limite: 10 }): Promise<{
     dados: ModeloVeiculoListItem[];
     total: number;
     totalPaginas: number;
@@ -235,7 +238,15 @@ export const marcaModeloService = {
       dataCadastro: new Date().toISOString()
     };
 
-    modelos.push(novoModelo);
+    // Converter para ModeloVeiculoListItem para adicionar ao array
+    const modeloListItem: ModeloVeiculoListItem = {
+      ...novoModelo,
+      id: novoModelo.id!, // Garantir que id não seja undefined
+      marcaNome: marcas.find(m => m.id === dados.marcaId)?.nome || "",
+      totalVeiculos: 0
+    };
+
+    modelos.push(modeloListItem);
     return novoModelo;
   },
 
@@ -289,15 +300,30 @@ export const marcaModeloService = {
 
     const novoModelo: ModeloVeiculo = {
       id: Math.random().toString(36).substr(2, 9),
-      marcaId: novaMarca.id,
+      marcaId: novaMarca.id!,
       nome: "Modelo Importado",
       observacao: "Modelo criado via importação CSV",
       status: "ATIVO",
       dataCadastro: new Date().toISOString()
     };
 
-    marcas.push(novaMarca);
-    modelos.push(novoModelo);
+    // Converter para MarcaVeiculoListItem para adicionar ao array
+    const marcaListItem: MarcaVeiculoListItem = {
+      ...novaMarca,
+      id: novaMarca.id!, // Garantir que id não seja undefined
+      totalModelos: 1
+    };
+
+    // Converter para ModeloVeiculoListItem para adicionar ao array
+    const modeloListItem: ModeloVeiculoListItem = {
+      ...novoModelo,
+      id: novoModelo.id!, // Garantir que id não seja undefined
+      marcaNome: marcaListItem.nome,
+      totalVeiculos: 0
+    };
+
+    marcas.push(marcaListItem);
+    modelos.push(modeloListItem);
 
     resultado.sucesso.marcas.push(novaMarca);
     resultado.sucesso.modelos.push(novoModelo);

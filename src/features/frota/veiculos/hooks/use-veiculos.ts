@@ -46,7 +46,7 @@ export function useVeiculos() {
       const [resultadoCategorias, resultadoMarcas, resultadoModelos] = await Promise.all([
         categoriaService.listar({ limite: 100 }),
         marcaModeloService.listarMarcas({ limite: 100 }),
-        marcaModeloService.listarModelos({ limite: 100 })
+        marcaModeloService.listarModelos({ pagina: 1, limite: 100 })
       ])
 
       setCategorias(resultadoCategorias.dados.filter(c => c.status === "ATIVO"))
