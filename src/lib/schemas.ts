@@ -369,3 +369,154 @@ export type NotaInterna = z.infer<typeof notaInternaSchema>;
 export type BloqueioCliente = z.infer<typeof bloqueioClienteSchema>;
 export type Motorista = z.infer<typeof motoristaSchema>;
 export type BuscaMotorista = z.infer<typeof buscaMotoristaSchema>;
+
+// Schemas para Fornecedores
+export const tipoFornecedorEnum = z.enum(["VEICULO", "SERVICO"], {
+  required_error: "Tipo de fornecedor eh obrigatorio",
+});
+
+export const statusFornecedorEnum = z.enum(["ATIVO", "INATIVO"], {
+  required_error: "Status do fornecedor eh obrigatorio",
+});
+
+export const campoAtuacaoEnum = z.enum([
+  "MECANICA",
+  "FUNILARIA",
+  "PINTURA",
+  "HIGIENIZACAO_LIMPEZA",
+  "SEGURADORA",
+  "ELETRICA",
+  "AR_CONDICIONADO",
+  "PNEUS_RODAS",
+  "VIDRACARIA",
+  "OUTROS"
+], {
+  required_error: "Campo de atuacao eh obrigatorio",
+});
+
+// Schema para veiculo utilizado anteriormente
+export const veiculoUtilizadoSchema = z.object({
+  marca: z.string().min(1, "Marca eh obrigatoria"),
+  modelo: z.string().min(1, "Modelo eh obrigatorio"),
+  categoria: z.string().min(1, "Categoria eh obrigatoria"),
+  placa: z.string().regex(/^[A-Z]{3}-?\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/, "Placa deve estar no formato ABC-1234 ou ABC1D23"),
+  cor: z.string().min(1, "Cor eh obrigatoria"),
+  pax: z.number().min(1, "Numero de passageiros deve ser positivo"),
+  blindagem: z.boolean().default(false),
+  acessorios: z.array(z.string()).optional(),
+  valorNegociado: z.number().min(0, "Valor negociado deve ser positivo"),
+  periodo: z.string().min(1, "Periodo eh obrigatorio"),
+});
+
+// Schema para servico prestado
+export const servicoPrestadoSchema = z.object({
+  descricao: z.string().min(1, "Descricao do servico eh obrigatoria"),
+  valorMedio: z.number().min(0, "Valor medio deve ser positivo").optional(),
+  observacoes: z.string().optional(),
+});
+
+// Schema para profissional da equipe
+export const profissionalEquipeSchema = z.object({
+  nome: z.string().min(1, "Nome eh obrigatorio"),
+  especialidade: z.string().min(1, "Especialidade eh obrigatoria"),
+  telefone: z.string().min(1, "Telefone eh obrigatorio"),
+  email: z.string().email("E-mail deve ser valido").optional(),
+});
+
+// Schema para documento anexo
+export const documentoAnexoSchema = z.object({
+  tipo: z.enum(["NOTA_FISCAL", "CONTRATO", "CERTIFICADO", "OUTROS"], {
+    required_error: "Tipo do documento eh obrigatorio",
+  }),
+  nome: z.string().min(1, "Nome do arquivo eh obrigatorio"),
+  url: z.string().url("URL do documento deve ser valida"),
+  dataUpload: z.string().min(1, "Data de upload eh obrigatoria"),
+});
+
+// Schema para ordem de servico
+export const ordemServicoSchema = z.object({
+  id: z.string().optional(), // Gerado automaticamente
+  numero: z.string().min(1, "Numero da OS eh obrigatorio"),
+  data: z.string().min(1, "Data eh obrigatoria"),
+  descricao: z.string().min(1, "Descricao eh obrigatoria"),
+  valor: z.number().min(0, "Valor deve ser positivo"),
+  status: z.enum(["PENDENTE", "EM_ANDAMENTO", "CONCLUIDA", "CANCELADA"]).default("PENDENTE"),
+  observacoes: z.string().optional(),
+});
+
+// Schema para historico de pagamentos
+export const historicoPagamentoSchema = z.object({
+  ordemServicoId: z.string().min(1, "ID da OS eh obrigatorio"),
+  valor: z.number().min(0, "Valor deve ser positivo"),
+  dataPagamento: z.string().min(1, "Data de pagamento eh obrigatoria"),
+  formaPagamento: z.string().min(1, "Forma de pagamento eh obrigatoria"),
+  comprovante: z.string().url("URL do comprovante deve ser valida").optional(),
+});
+
+// Schema para fornecedor de veiculo
+export const fornecedorVeiculoSchema = z.object({
+  tipo: z.literal("VEICULO"),
+  razaoSocial: z.string().min(1, "Razao social eh obrigatoria"),
+  nomeFantasia: z.string().optional(),
+  cnpj: z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, "CNPJ deve estar no formato 00.000.000/0000-00"),
+  contatoResponsavel: contatoSchema,
+  contatoFinanceiro: contatoSchema,
+  enderecoCompleto: enderecoSchema,
+  veiculosUtilizados: z.array(veiculoUtilizadoSchema).optional(),
+  valorRepasseNegociado: z.number().min(0, "Valor de repasse deve ser positivo").optional(),
+  historicoPagamentos: z.array(historicoPagamentoSchema).optional(),
+  documentosAnexos: z.array(documentoAnexoSchema).optional(),
+  ordensServico: z.array(ordemServicoSchema).optional(),
+  status: statusFornecedorEnum.default("ATIVO"),
+  dataCadastro: z.string().optional(), // Gerada automaticamente
+});
+
+// Schema para fornecedor de servico
+export const fornecedorServicoSchema = z.object({
+  tipo: z.literal("SERVICO"),
+  razaoSocial: z.string().min(1, "Razao social eh obrigatoria"),
+  nomeFantasia: z.string().optional(),
+  cnpj: z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, "CNPJ deve estar no formato 00.000.000/0000-00"),
+  contatoResponsavel: contatoSchema,
+  contatoFinanceiro: contatoSchema,
+  enderecoCompleto: enderecoSchema,
+  campoAtuacao: z.array(campoAtuacaoEnum).min(1, "Pelo menos um campo de atuacao deve ser selecionado"),
+  servicosPrestados: z.array(servicoPrestadoSchema).optional(),
+  equipe: z.array(profissionalEquipeSchema).optional(),
+  documentosAnexos: z.array(documentoAnexoSchema).optional(),
+  ordensServico: z.array(ordemServicoSchema).optional(),
+  status: statusFornecedorEnum.default("ATIVO"),
+  dataCadastro: z.string().optional(), // Gerada automaticamente
+});
+
+// Schema unificado para fornecedores
+export const fornecedorSchema = z.discriminatedUnion("tipo", [
+  fornecedorVeiculoSchema,
+  fornecedorServicoSchema,
+]);
+
+// Schema para busca/filtro de fornecedores
+export const buscaFornecedorSchema = z.object({
+  termo: z.string().optional(), // Busca por nome ou CNPJ
+  tipo: tipoFornecedorEnum.optional(),
+  status: statusFornecedorEnum.optional(),
+  campoAtuacao: campoAtuacaoEnum.optional(),
+  pagina: z.number().min(1).default(1),
+  limite: z.number().min(1).max(100).default(10),
+});
+
+export type TipoFornecedor = z.infer<typeof tipoFornecedorEnum>;
+export type StatusFornecedor = z.infer<typeof statusFornecedorEnum>;
+export type CampoAtuacao = z.infer<typeof campoAtuacaoEnum>;
+
+export type VeiculoUtilizado = z.infer<typeof veiculoUtilizadoSchema>;
+export type ServicoPrestado = z.infer<typeof servicoPrestadoSchema>;
+export type ProfissionalEquipe = z.infer<typeof profissionalEquipeSchema>;
+export type DocumentoAnexo = z.infer<typeof documentoAnexoSchema>;
+export type OrdemServico = z.infer<typeof ordemServicoSchema>;
+export type HistoricoPagamento = z.infer<typeof historicoPagamentoSchema>;
+
+export type FornecedorVeiculo = z.infer<typeof fornecedorVeiculoSchema>;
+export type FornecedorServico = z.infer<typeof fornecedorServicoSchema>;
+export type Fornecedor = z.infer<typeof fornecedorSchema>;
+export type BuscaFornecedor = z.infer<typeof buscaFornecedorSchema>;
