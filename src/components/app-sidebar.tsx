@@ -1,0 +1,224 @@
+import * as React from "react"
+import {
+  LayoutDashboard,
+  Users,
+  Car,
+  FileText,
+  Calculator,
+  BarChart3,
+  Settings,
+  UserCheck,
+  Shield,
+  Truck,
+  ClipboardList,
+  Calendar,
+  CreditCard,
+  PiggyBank,
+  FileBarChart,
+  Lightbulb
+} from "lucide-react"
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from "@/components/ui/sidebar"
+
+// Navigation data for Classe A Locadora
+const data = {
+  navMain: [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
+      items: [],
+    },
+    {
+      title: "Insights",
+      url: "/insights",
+      icon: Lightbulb,
+      items: [],
+    },
+    {
+      title: "Cadastros",
+      icon: Users,
+      items: [
+        {
+          title: "Clientes",
+          url: "/cadastros/clientes",
+          icon: Users,
+        },
+        {
+          title: "Motoristas",
+          url: "/cadastros/motoristas",
+          icon: UserCheck,
+        },
+        {
+          title: "Fornecedores",
+          url: "/cadastros/fornecedores",
+          icon: Truck,
+        },
+        {
+          title: "Frota",
+          url: "/cadastros/frota",
+          icon: Car,
+        },
+      ],
+    },
+    {
+      title: "Operacional",
+      icon: FileText,
+      items: [
+        {
+          title: "Contratos",
+          url: "/operacional/contratos",
+          icon: FileText,
+        },
+        {
+          title: "Checklist",
+          url: "/operacional/checklist",
+          icon: ClipboardList,
+        },
+        {
+          title: "Agenda",
+          url: "/operacional/agenda",
+          icon: Calendar,
+        },
+      ],
+    },
+    {
+      title: "Financeiro",
+      icon: Calculator,
+      items: [
+        {
+          title: "Contas a Pagar",
+          url: "/financeiro/contas-pagar",
+          icon: CreditCard,
+        },
+        {
+          title: "Contas a Receber",
+          url: "/financeiro/contas-receber",
+          icon: CreditCard,
+        },
+        {
+          title: "Caixa Investimento",
+          url: "/financeiro/caixa-investimento",
+          icon: PiggyBank,
+        },
+      ],
+    },
+    {
+      title: "Relatórios",
+      icon: BarChart3,
+      items: [
+        {
+          title: "Visão Geral",
+          url: "/relatorios/visao-geral",
+          icon: FileBarChart,
+        },
+        {
+          title: "Ocupação",
+          url: "/relatorios/ocupacao",
+          icon: BarChart3,
+        },
+        {
+          title: "Atividades dos Funcionários",
+          url: "/relatorios/atividades-funcionarios",
+          icon: FileBarChart,
+        },
+      ],
+    },
+    {
+      title: "Configurações",
+      icon: Settings,
+      items: [
+        {
+          title: "Níveis de Acesso",
+          url: "/configuracoes/niveis-acesso",
+          icon: Shield,
+        },
+        {
+          title: "Usuários",
+          url: "/configuracoes/usuarios",
+          icon: Users,
+        },
+      ],
+    },
+  ],
+}
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  return (
+    <Sidebar {...props} data-tutorial="sidebar">
+      <SidebarHeader>
+        <div className="flex h-16 items-center px-4">
+          <h2 className="text-lg font-semibold">Classe A</h2>
+        </div>
+      </SidebarHeader>
+      <SidebarContent>
+        {data.navMain.map((item) => {
+          const Icon = item.icon
+
+          if (item.items.length === 0) {
+            // Item sem subitens (Dashboard)
+            return (
+              <SidebarGroup key={item.title}>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <a href={item.url} className="flex items-center gap-2">
+                          <Icon className="h-4 w-4" />
+                          {item.title}
+                        </a>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            )
+          }
+
+          // Itens com subitens
+          return (
+            <SidebarGroup key={item.title}>
+              <SidebarGroupLabel className="flex items-center gap-2">
+                <Icon className="h-4 w-4" />
+                {item.title}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {item.items.map((subItem) => {
+                    const SubIcon = subItem.icon
+                    return (
+                      <SidebarMenuItem key={subItem.title}>
+                        <SidebarMenuButton asChild>
+                          <a
+                            href={subItem.url}
+                            className="flex items-center gap-2"
+                            data-tutorial={subItem.title === "Usuários" ? "usuarios-menu" : subItem.title === "Níveis de Acesso" ? "niveis-acesso-menu" : undefined}
+                          >
+                            <SubIcon className="h-4 w-4" />
+                            {subItem.title}
+                          </a>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    )
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          )
+        })}
+      </SidebarContent>
+      <SidebarRail />
+    </Sidebar>
+  )
+}

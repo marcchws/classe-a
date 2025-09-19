@@ -20,7 +20,6 @@
   },
   "registries": {
     "@originui": "https://originui.com/r/{name}.json",
-    "@shadcn": "https://ui.shadcn.com/registry/{name}.json",
     "@alexcarpenter": "https://ui.alexcarpenter.me/r/{name}.json",
     "@basecn": "https://basecn.dev/r/{name}.json",
     "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",

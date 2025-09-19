@@ -1,103 +1,240 @@
-import Image from "next/image";
+"use client";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Car, Shield, Users, Calendar, FileText, BarChart3 } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-slate-900 mb-4">
+            Sistema de Gestão Classe A
+          </h1>
+          <p className="text-xl text-slate-600 mb-2">
+            Locação de Veículos Blindados e Executivos
+          </p>
+          <p className="text-sm text-slate-500">
+            21+ anos de experiência • Autorização do Exército Brasileiro
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Status do Projeto */}
+        <Card className="mb-8 border-emerald-200 bg-emerald-50">
+          <CardHeader>
+            <CardTitle className="text-emerald-800">🚀 Status da Implementação</CardTitle>
+            <CardDescription className="text-emerald-600">
+              Fase 1: Fundação e Estrutura Base
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                  <span>Estrutura de pastas configurada</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                  <span>Componentes UI base instalados</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                  <span>Sistema de autenticação completo</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+                  <span>Layout principal (pendente)</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+                  <span>Módulos de cadastro (pendente)</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+                  <span>Sistema operacional (pendente)</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Módulos do Sistema */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Cadastros Essenciais */}
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                Cadastros Essenciais
+              </CardTitle>
+              <CardDescription>
+                Clientes, Motoristas, Fornecedores e Frota
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li>• Clientes (PF, PJ, Parceiros)</li>
+                <li>• Cadastro de Motoristas</li>
+                <li>• Gestão de Fornecedores</li>
+                <li>• Categorias e Veículos</li>
+              </ul>
+              <Button variant="outline" className="w-full mt-4" disabled>
+                Em Desenvolvimento
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Operacional */}
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Car className="h-5 w-5 text-emerald-600" />
+                Módulo Operacional
+              </CardTitle>
+              <CardDescription>
+                Contratos, Checklists e Agendamento
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li>• Cadastro de Contratos</li>
+                <li>• Checklists de Veículos</li>
+                <li>• Agenda e Escalação</li>
+                <li>• Gestão de Manutenção</li>
+              </ul>
+              <Button variant="outline" className="w-full mt-4" disabled>
+                Aguardando Fase 3
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Financeiro */}
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-purple-600" />
+                Módulo Financeiro
+              </CardTitle>
+              <CardDescription>
+                Contas a Pagar/Receber e Investimentos
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li>• Contas a Pagar</li>
+                <li>• Contas a Receber</li>
+                <li>• Caixa de Investimento</li>
+                <li>• Automação de Pagamentos</li>
+              </ul>
+              <Button variant="outline" className="w-full mt-4" disabled>
+                Aguardando Fase 4
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Relatórios */}
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-orange-600" />
+                Dashboards
+              </CardTitle>
+              <CardDescription>
+                Relatórios e Business Intelligence
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li>• Dashboard de Frotas</li>
+                <li>• Relatório de Ocupação</li>
+                <li>• Visão Geral</li>
+                <li>• Histórico de Atividades</li>
+              </ul>
+              <Button variant="outline" className="w-full mt-4" disabled>
+                Aguardando Fase 5
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* App Motorista */}
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-destructive" />
+                App Motorista
+              </CardTitle>
+              <CardDescription>
+                Interface Mobile para Motoristas
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li>• Agenda do Motorista</li>
+                <li>• Iniciar/Finalizar Atendimento</li>
+                <li>• Valores a Receber</li>
+                <li>• Contas em Aberto</li>
+              </ul>
+              <Button variant="outline" className="w-full mt-4" disabled>
+                Aguardando Fase 6
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Configurações */}
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-slate-600" />
+                Sistema
+              </CardTitle>
+              <CardDescription>
+                Autenticação e Configurações
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li>• Sistema de Login</li>
+                <li>• Níveis de Acesso</li>
+                <li>• Gestão de Usuários</li>
+                <li>• Tutorial/Onboarding</li>
+              </ul>
+              <Button className="w-full mt-4" onClick={() => window.location.href = '/login'}>
+                Testar Sistema
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Acesso ao Dashboard */}
+        <Card className="mt-8 border-primary/20 bg-primary/5">
+          <CardHeader>
+            <CardTitle className="text-primary">🎯 Acessar Dashboard</CardTitle>
+            <CardDescription className="text-primary">
+              Dashboard principal com tutorial implementado
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center">
+              <Button className="w-full mb-2" onClick={() => window.location.href = '/dashboard'}>
+                Acessar Dashboard
+              </Button>
+              <p className="text-xs text-primary/90">Tutorial interativo incluído</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Footer */}
+        <div className="text-center mt-12 pt-8 border-t border-slate-200">
+          <p className="text-sm text-slate-500">
+            Sistema de Gestão Classe A Locadora - Desenvolvido com Next.js 15, React 19 e Tailwind CSS
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
