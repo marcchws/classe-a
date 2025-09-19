@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { FornecedorTable } from "@/features/cadastros-essenciais/fornecedores/components/fornecedor-table";
 import { FornecedorFiltersComponent } from "@/features/cadastros-essenciais/fornecedores/components/fornecedor-filters";
+import { useFornecedorActions } from "@/features/cadastros-essenciais/fornecedores/hooks/use-fornecedores";
 import type { FornecedorTableItem, FornecedorFilters } from "@/types/fornecedor";
 import { useRouter } from "next/navigation";
 
@@ -56,6 +57,7 @@ const mockFornecedores: FornecedorTableItem[] = [
 
 export default function FornecedoresPage() {
   const router = useRouter();
+  const { excluirFornecedor, isLoading: isDeleting } = useFornecedorActions();
   const [fornecedores, setFornecedores] = useState<FornecedorTableItem[]>([]);
   const [filteredFornecedores, setFilteredFornecedores] = useState<FornecedorTableItem[]>([]);
   const [filters, setFilters] = useState<FornecedorFilters>({});
@@ -116,9 +118,35 @@ export default function FornecedoresPage() {
     router.push(`/cadastros/fornecedores/${id}`);
   };
 
-  const handleDelete = (id: string) => {
-    // Implementar confirmação e exclusão
-    console.log("Excluir fornecedor:", id);
+  const handleDelete = async (id: string) => {
+    // Encontrar o fornecedor para mostrar informações na confirmação
+    const fornecedor = fornecedores.find(f => f.id === id);
+    if (!fornecedor) return;
+
+    // Diálogo de confirmação
+    const confirmMessage = `Tem certeza que deseja excluir o fornecedor "${fornecedor.razaoSocial}"?\n\nEsta ação não pode ser desfeita.`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      const sucesso = await excluirFornecedor(id);
+      
+      if (sucesso) {
+        // Remover o fornecedor da lista local
+        setFornecedores(prev => prev.filter(f => f.id !== id));
+        setFilteredFornecedores(prev => prev.filter(f => f.id !== id));
+        
+        // Mostrar mensagem de sucesso (você pode usar um toast aqui)
+        alert("Fornecedor excluído com sucesso!");
+      } else {
+        alert("Erro ao excluir fornecedor. Tente novamente.");
+      }
+    } catch (error) {
+      console.error("Erro ao excluir fornecedor:", error);
+      alert("Erro ao excluir fornecedor. Tente novamente.");
+    }
   };
 
   const handleNew = () => {
@@ -210,7 +238,7 @@ export default function FornecedoresPage() {
             onEdit={handleEdit}
             onView={handleView}
             onDelete={handleDelete}
-            isLoading={isLoading}
+            isLoading={isLoading || isDeleting}
           />
         </CardContent>
       </Card>
