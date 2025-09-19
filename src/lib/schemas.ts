@@ -235,3 +235,137 @@ export type PessoaJuridica = z.infer<typeof pessoaJuridicaSchema>;
 export type Parceiro = z.infer<typeof parceiroSchema>;
 export type Cliente = z.infer<typeof clienteSchema>;
 export type BuscaCliente = z.infer<typeof buscaClienteSchema>;
+
+// Schemas para Motorista
+export const categoriaCnhEnum = z.enum(["B", "D"], {
+  required_error: "Categoria da CNH eh obrigatoria",
+});
+
+export const idiomaEnum = z.enum(["PORTUGUES", "INGLES", "ESPANHOL", "FRANCES", "ITALIANO", "ALEMAO"], {
+  required_error: "Pelo menos um idioma eh obrigatorio",
+});
+
+export const grupoPrioridadeEnum = z.enum(["PREFERENCIAL", "APOIO"], {
+  required_error: "Grupo de prioridade eh obrigatorio",
+});
+
+export const statusMotoristaEnum = z.enum(["ATIVO", "INATIVO"], {
+  required_error: "Status do motorista eh obrigatorio",
+});
+
+export const tipoDocumentoEnum = z.enum(["CNH", "ANTECEDENTES", "CERTIFICADO_DIRECAO_EXECUTIVA", "CERTIFICADO_TRANSPORTE_PASSAGEIROS"], {
+  required_error: "Tipo de documento eh obrigatorio",
+});
+
+export const tipoNotaEnum = z.enum(["ELOGIO", "RECLAMACAO", "OBSERVACAO"], {
+  required_error: "Tipo de nota eh obrigatorio",
+});
+
+// Schema para documento
+export const documentoMotoristaSchema = z.object({
+  tipo: tipoDocumentoEnum,
+  url: z.string().url("URL do documento deve ser valida"),
+  nome: z.string().min(1, "Nome do arquivo eh obrigatorio"),
+  dataUpload: z.string().min(1, "Data de upload eh obrigatoria"),
+});
+
+// Schema para historico de servico
+export const historicoServicoSchema = z.object({
+  contratoId: z.string().min(1, "ID do contrato eh obrigatorio"),
+  clienteNome: z.string().min(1, "Nome do cliente eh obrigatorio"),
+  dataServico: z.string().min(1, "Data do servico eh obrigatoria"),
+  valorRecebido: z.number().min(0, "Valor recebido deve ser positivo"),
+  avaliacaoCliente: z.number().min(1).max(5).optional(),
+  observacoes: z.string().optional(),
+});
+
+// Schema para nota interna
+export const notaInternaSchema = z.object({
+  tipo: tipoNotaEnum,
+  data: z.string().min(1, "Data eh obrigatoria"),
+  descricao: z.string().min(1, "Descricao eh obrigatoria"),
+  autorNome: z.string().min(1, "Nome do autor eh obrigatorio"),
+  clienteRelacionado: z.string().optional(),
+});
+
+// Schema para bloqueio por cliente
+export const bloqueioClienteSchema = z.object({
+  clienteId: z.string().min(1, "ID do cliente eh obrigatorio"),
+  clienteNome: z.string().min(1, "Nome do cliente eh obrigatorio"),
+  motivo: z.string().min(1, "Motivo do bloqueio eh obrigatorio"),
+  dataBloqueio: z.string().min(1, "Data do bloqueio eh obrigatoria"),
+  bloqueadoPorNome: z.string().min(1, "Nome de quem bloqueou eh obrigatorio"),
+});
+
+// Schema principal para motorista
+export const motoristaSchema = z.object({
+  id: z.string().optional(), // Gerado automaticamente
+  nomeCompleto: z.string().min(1, "Nome completo eh obrigatorio"),
+  cpf: z.string().regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "CPF deve estar no formato 000.000.000-00"),
+  telefone: z.string().min(1, "Telefone eh obrigatorio"),
+  endereco: enderecoSchema,
+  cnh: z.object({
+    numero: z.string().min(1, "Numero da CNH eh obrigatorio"),
+    categoria: categoriaCnhEnum,
+    dataValidade: z.string().min(1, "Data de validade da CNH eh obrigatoria"),
+  }),
+  documentos: z.array(documentoMotoristaSchema).min(3, "Eh obrigatorio anexar CNH, antecedentes criminais e certificados"),
+  idiomasFluentes: z.array(idiomaEnum).min(1, "Pelo menos um idioma deve ser selecionado"),
+  categoriaServico: z.array(z.enum(["ATE_8_PASSAGEIROS", "VANS", "MONOLINGUE", "BILINGUE"])).optional(), // Classificacao automatica
+  grupoPrioridade: grupoPrioridadeEnum,
+  regiaoAtendimento: z.object({
+    cidade: z.string().min(1, "Cidade eh obrigatoria"),
+    bairros: z.array(z.string()).min(1, "Pelo menos um bairro deve ser selecionado"),
+  }),
+  notasInternas: z.array(notaInternaSchema).optional(),
+  bloqueiosPorCliente: z.array(bloqueioClienteSchema).optional(),
+  historicoServicos: z.array(historicoServicoSchema).optional(),
+  status: statusMotoristaEnum.default("ATIVO"),
+  dataCadastro: z.string().optional(), // Gerada automaticamente
+}).refine((data) => {
+  // Validar se CNH esta nos documentos
+  const temCnh = data.documentos.some(doc => doc.tipo === "CNH");
+  const temAntecedentes = data.documentos.some(doc => doc.tipo === "ANTECEDENTES");
+  const temCertificados = data.documentos.some(doc =>
+    doc.tipo === "CERTIFICADO_DIRECAO_EXECUTIVA" || doc.tipo === "CERTIFICADO_TRANSPORTE_PASSAGEIROS"
+  );
+
+  return temCnh && temAntecedentes && temCertificados;
+}, {
+  message: "Eh obrigatorio anexar CNH, antecedentes criminais e pelo menos um certificado",
+  path: ["documentos"],
+}).refine((data) => {
+  // Validar data de validade da CNH
+  const hoje = new Date();
+  const dataValidade = new Date(data.cnh.dataValidade);
+  return dataValidade > hoje;
+}, {
+  message: "CNH deve estar dentro da validade",
+  path: ["cnh", "dataValidade"],
+});
+
+// Schema para busca/filtro de motoristas
+export const buscaMotoristaSchema = z.object({
+  termo: z.string().optional(), // Busca por nome ou CPF
+  categoria: categoriaCnhEnum.optional(),
+  grupoPrioridade: grupoPrioridadeEnum.optional(),
+  regiaoAtendimento: z.string().optional(),
+  status: statusMotoristaEnum.optional(),
+  idioma: idiomaEnum.optional(),
+  pagina: z.number().min(1).default(1),
+  limite: z.number().min(1).max(100).default(10),
+});
+
+export type CategoriaCnh = z.infer<typeof categoriaCnhEnum>;
+export type Idioma = z.infer<typeof idiomaEnum>;
+export type GrupoPrioridade = z.infer<typeof grupoPrioridadeEnum>;
+export type StatusMotorista = z.infer<typeof statusMotoristaEnum>;
+export type TipoDocumento = z.infer<typeof tipoDocumentoEnum>;
+export type TipoNota = z.infer<typeof tipoNotaEnum>;
+
+export type DocumentoMotorista = z.infer<typeof documentoMotoristaSchema>;
+export type HistoricoServico = z.infer<typeof historicoServicoSchema>;
+export type NotaInterna = z.infer<typeof notaInternaSchema>;
+export type BloqueioCliente = z.infer<typeof bloqueioClienteSchema>;
+export type Motorista = z.infer<typeof motoristaSchema>;
+export type BuscaMotorista = z.infer<typeof buscaMotoristaSchema>;
