@@ -18,6 +18,8 @@ import {
   Lightbulb
 } from "lucide-react"
 
+import { ModeToggle } from "@/components/mode-toggle"
+
 import {
   Sidebar,
   SidebarContent,
@@ -174,8 +176,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props} data-tutorial="sidebar">
       <SidebarHeader>
-        <div className="flex h-16 items-center px-4">
+        <div className="flex h-16 items-center justify-between px-4">
           <h2 className="text-lg font-semibold">Classe A</h2>
+          <ModeToggle />
         </div>
       </SidebarHeader>
       <SidebarContent>

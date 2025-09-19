@@ -1,95 +1,73 @@
-"use client"
+"use client";
 
-import { useEffect, Suspense } from "react"
-import { useSearchParams } from "next/navigation"
-import { AppLayout } from "@/components/layout/app-layout"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useTutorialContext } from "@/features/tutorial"
-import { pageConfig } from "@/lib/page-config"
+import { useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { MetricsCards } from "@/components/dashboard/metrics-cards";
+import { RevenueChart } from "@/components/dashboard/revenue-chart";
+import { RecentActivities } from "@/components/dashboard/recent-activities";
+import { FleetOverview } from "@/components/dashboard/fleet-overview";
+import { useTutorialContext } from "@/features/tutorial";
 
 function DashboardContent() {
-  const searchParams = useSearchParams()
-  const { startTutorial } = useTutorialContext()
-
-  const breadcrumbs = [
-    { title: "Dashboard" },
-  ]
+  const searchParams = useSearchParams();
+  const { startTutorial } = useTutorialContext();
 
   useEffect(() => {
-    const tutorialId = searchParams.get('tutorial')
+    const tutorialId = searchParams.get('tutorial');
     if (tutorialId) {
-      // Pequeno delay para garantir que a página carregou completamente
       setTimeout(() => {
-        startTutorial(tutorialId)
-      }, 500)
+        startTutorial(tutorialId);
+      }, 500);
     }
-  }, [searchParams, startTutorial])
+  }, [searchParams, startTutorial]);
 
   return (
-    <AppLayout breadcrumbs={breadcrumbs} currentScreen="dashboard">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" data-tutorial="dashboard-metrics">
-        {pageConfig.dashboard.metrics.map((metric, index) => (
-          <Card key={index}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {metric.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{metric.value}</div>
-              <p className="text-xs text-muted-foreground">
-                {metric.description}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+      <div className="flex items-center justify-between space-y-2">
+        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-muted-foreground">
+            Bem-vindo de volta! Aqui está um resumo das suas operações.
+          </span>
+        </div>
       </div>
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card data-tutorial="next-contracts">
-          <CardHeader>
-            <CardTitle>Próximos Contratos</CardTitle>
-            <CardDescription>
-              Contratos agendados para os próximos dias
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {pageConfig.dashboard.upcomingContracts.map((contract, index) => (
-                <div key={index} className="text-sm">
-                  <div className="font-medium">{contract.title}</div>
-                  <div className="text-muted-foreground">{contract.schedule}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-        <Card data-tutorial="maintenance-schedule">
-          <CardHeader>
-            <CardTitle>Manutenções Programadas</CardTitle>
-            <CardDescription>
-              Veículos com manutenção agendada
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {pageConfig.dashboard.maintenanceSchedule.map((maintenance, index) => (
-                <div key={index} className="text-sm">
-                  <div className="font-medium">{maintenance.vehicle}</div>
-                  <div className="text-muted-foreground">{maintenance.description}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+
+      {/* Métricas Principais */}
+      <div data-tutorial="dashboard-metrics">
+        <MetricsCards />
       </div>
-    </AppLayout>
-  )
+
+      {/* Segunda linha: Gráfico de receita e visão geral da frota */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <RevenueChart />
+        </div>
+        <div className="lg:col-span-1">
+          <FleetOverview />
+        </div>
+      </div>
+
+      {/* Terceira linha: Atividades recentes */}
+      <div className="grid gap-4 lg:grid-cols-1">
+        <div data-tutorial="recent-activities">
+          <RecentActivities />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function DashboardPage() {
   return (
-    <Suspense fallback={<div>Carregando...</div>}>
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Carregando dashboard...</p>
+        </div>
+      </div>
+    }>
       <DashboardContent />
     </Suspense>
-  )
+  );
 }
