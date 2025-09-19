@@ -520,3 +520,214 @@ export type FornecedorVeiculo = z.infer<typeof fornecedorVeiculoSchema>;
 export type FornecedorServico = z.infer<typeof fornecedorServicoSchema>;
 export type Fornecedor = z.infer<typeof fornecedorSchema>;
 export type BuscaFornecedor = z.infer<typeof buscaFornecedorSchema>;
+
+// Schemas para Frota (Veículos)
+
+// Enums para Categorias de Veículos
+export const statusCategoriaEnum = z.enum(["ATIVO", "INATIVO"], {
+  required_error: "Status da categoria eh obrigatorio",
+});
+
+// Schema para Categoria de Veículo
+export const categoriaVeiculoSchema = z.object({
+  id: z.string().optional(), // Gerado automaticamente
+  nome: z.string().min(1, "Nome da categoria eh obrigatorio"),
+  descricao: z.string().min(1, "Descricao da categoria eh obrigatoria"),
+  status: statusCategoriaEnum.default("ATIVO"),
+  dataCadastro: z.string().optional(), // Gerada automaticamente
+});
+
+// Schema para busca/filtro de categorias
+export const buscaCategoriaVeiculoSchema = z.object({
+  termo: z.string().optional(), // Busca por nome
+  status: statusCategoriaEnum.optional(),
+  pagina: z.number().min(1).default(1),
+  limite: z.number().min(1).max(100).default(10),
+});
+
+// Enums para Marca/Modelo
+export const statusMarcaModeloEnum = z.enum(["ATIVO", "INATIVO"], {
+  required_error: "Status da marca/modelo eh obrigatorio",
+});
+
+export const tipoManutencaoEnum = z.enum(["QUILOMETRAGEM", "TEMPO"], {
+  required_error: "Tipo de manutencao eh obrigatorio",
+});
+
+// Schema para item de manutenção
+export const itemManutencaoSchema = z.object({
+  id: z.string().optional(),
+  nome: z.string().min(1, "Nome do item eh obrigatorio"),
+  tipo: tipoManutencaoEnum,
+  valor: z.number().min(1, "Valor deve ser positivo"), // KM ou meses
+  descricao: z.string().optional(),
+});
+
+// Schema para Marca de Veículo
+export const marcaVeiculoSchema = z.object({
+  id: z.string().optional(), // Gerado automaticamente
+  nome: z.string().min(1, "Nome da marca eh obrigatorio"),
+  observacao: z.string().optional(),
+  status: statusMarcaModeloEnum.default("ATIVO"),
+  dataCadastro: z.string().optional(), // Gerada automaticamente
+});
+
+// Schema para Modelo de Veículo
+export const modeloVeiculoSchema = z.object({
+  id: z.string().optional(), // Gerado automaticamente
+  marcaId: z.string().min(1, "Marca eh obrigatoria"),
+  nome: z.string().min(1, "Nome do modelo eh obrigatorio"),
+  observacao: z.string().optional(),
+  itensManutencao: z.array(itemManutencaoSchema).optional(),
+  status: statusMarcaModeloEnum.default("ATIVO"),
+  dataCadastro: z.string().optional(), // Gerada automaticamente
+});
+
+// Schema para busca/filtro de marcas e modelos
+export const buscaMarcaModeloSchema = z.object({
+  termo: z.string().optional(), // Busca por nome da marca ou modelo
+  marcaId: z.string().optional(),
+  status: statusMarcaModeloEnum.optional(),
+  pagina: z.number().min(1).default(1),
+  limite: z.number().min(1).max(100).default(10),
+});
+
+// Enums para Veículos
+export const tipoCombustivelEnum = z.enum(["GASOLINA", "ETANOL", "DIESEL", "HIBRIDO", "ELETRICO"], {
+  required_error: "Tipo de combustivel eh obrigatorio",
+});
+
+export const modalidadeCompraEnum = z.enum(["A_VISTA", "FINANCIAMENTO", "LEASING", "CONSORCIO"], {
+  required_error: "Modalidade de compra eh obrigatoria",
+});
+
+export const statusVeiculoEnum = z.enum(["DISPONIVEL", "ALUGADO", "MANUTENCAO", "INDISPONIVEL"], {
+  required_error: "Status do veiculo eh obrigatorio",
+});
+
+// Schema para dados de financiamento
+export const financiamentoSchema = z.object({
+  numeroParcelas: z.number().min(1, "Numero de parcelas deve ser positivo"),
+  taxaJuros: z.number().min(0, "Taxa de juros deve ser positiva"),
+  valorTotalComJuros: z.number().min(0, "Valor total com juros deve ser positivo"),
+  parcelasPagas: z.number().min(0, "Parcelas pagas deve ser positivo").default(0),
+  parcelasPendentes: z.number().min(0, "Parcelas pendentes deve ser positivo"),
+}).refine((data) => {
+  return data.parcelasPagas <= data.numeroParcelas;
+}, {
+  message: "Parcelas pagas nao pode ser maior que o total de parcelas",
+  path: ["parcelasPagas"],
+}).refine((data) => {
+  return data.parcelasPagas + data.parcelasPendentes === data.numeroParcelas;
+}, {
+  message: "Soma de parcelas pagas e pendentes deve ser igual ao total",
+  path: ["parcelasPendentes"],
+});
+
+// Schema para dados de blindagem
+export const blindagemSchema = z.object({
+  temBlindagem: z.boolean().default(false),
+  valor: z.number().min(0, "Valor da blindagem deve ser positivo").optional(),
+  parcelado: z.boolean().default(false),
+  numeroParcelas: z.number().min(1, "Numero de parcelas deve ser positivo").optional(),
+}).refine((data) => {
+  if (data.temBlindagem && !data.valor) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Valor da blindagem eh obrigatorio quando veiculo eh blindado",
+  path: ["valor"],
+}).refine((data) => {
+  if (data.parcelado && !data.numeroParcelas) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Numero de parcelas eh obrigatorio quando blindagem eh parcelada",
+  path: ["numeroParcelas"],
+});
+
+// Schema para item de manutenção do veículo
+export const manutencaoVeiculoSchema = z.object({
+  id: z.string().optional(),
+  itemManutencaoId: z.string().min(1, "Item de manutencao eh obrigatorio"),
+  proximaManutencaoKm: z.number().min(0, "Proxima manutencao por KM deve ser positiva").optional(),
+  proximaManutencaoData: z.string().optional(),
+  descricao: z.string().optional(),
+});
+
+// Schema principal para Veículo
+export const veiculoSchema = z.object({
+  id: z.string().optional(), // Gerado automaticamente
+  categoriaId: z.string().min(1, "Categoria do veiculo eh obrigatoria"),
+  marcaId: z.string().min(1, "Marca do veiculo eh obrigatoria"),
+  modeloId: z.string().min(1, "Modelo do veiculo eh obrigatorio"),
+  versao: z.string().min(1, "Versao do veiculo eh obrigatoria"),
+  tipoCombustivel: tipoCombustivelEnum,
+  cor: z.string().min(1, "Cor do veiculo eh obrigatoria"),
+  capacidadePassageiros: z.number().min(1, "Capacidade de passageiros deve ser positiva"),
+  placa: z.string().regex(/^[A-Z]{3}-?\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/, "Placa deve estar no formato ABC-1234 ou ABC1D23").optional(),
+  blindagem: blindagemSchema,
+  transformacoesEspeciais: z.string().optional(),
+  outrosAcessorios: z.array(z.string()).optional(),
+  entrada: z.number().min(0, "Valor de entrada deve ser positivo"),
+  valorTotalCompra: z.number().min(0, "Valor total de compra deve ser positivo"),
+  modalidadeCompra: modalidadeCompraEnum,
+  financiamento: financiamentoSchema.optional(),
+  kmAtual: z.number().min(0, "KM atual deve ser positivo"),
+  capacidadeTanque: z.number().min(0, "Capacidade do tanque deve ser positiva"),
+  detalhesManutencao: z.array(manutencaoVeiculoSchema).optional(),
+  status: statusVeiculoEnum.default("DISPONIVEL"),
+  dataCadastro: z.string().optional(), // Gerada automaticamente
+}).refine((data) => {
+  if (data.modalidadeCompra === "FINANCIAMENTO" && !data.financiamento) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Dados de financiamento sao obrigatorios quando modalidade eh financiamento",
+  path: ["financiamento"],
+}).refine((data) => {
+  if (data.entrada > data.valorTotalCompra) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Valor de entrada nao pode ser maior que o valor total",
+  path: ["entrada"],
+});
+
+// Schema para busca/filtro de veículos
+export const buscaVeiculoSchema = z.object({
+  termo: z.string().optional(), // Busca por placa, modelo, marca
+  categoriaId: z.string().optional(),
+  marcaId: z.string().optional(),
+  modeloId: z.string().optional(),
+  tipoCombustivel: tipoCombustivelEnum.optional(),
+  status: statusVeiculoEnum.optional(),
+  temBlindagem: z.boolean().optional(),
+  pagina: z.number().min(1).default(1),
+  limite: z.number().min(1).max(100).default(10),
+});
+
+// Types exportados
+export type StatusCategoria = z.infer<typeof statusCategoriaEnum>;
+export type CategoriaVeiculo = z.infer<typeof categoriaVeiculoSchema>;
+export type BuscaCategoriaVeiculo = z.infer<typeof buscaCategoriaVeiculoSchema>;
+
+export type StatusMarcaModelo = z.infer<typeof statusMarcaModeloEnum>;
+export type TipoManutencao = z.infer<typeof tipoManutencaoEnum>;
+export type ItemManutencao = z.infer<typeof itemManutencaoSchema>;
+export type MarcaVeiculo = z.infer<typeof marcaVeiculoSchema>;
+export type ModeloVeiculo = z.infer<typeof modeloVeiculoSchema>;
+export type BuscaMarcaModelo = z.infer<typeof buscaMarcaModeloSchema>;
+
+export type TipoCombustivel = z.infer<typeof tipoCombustivelEnum>;
+export type ModalidadeCompra = z.infer<typeof modalidadeCompraEnum>;
+export type StatusVeiculo = z.infer<typeof statusVeiculoEnum>;
+export type Financiamento = z.infer<typeof financiamentoSchema>;
+export type Blindagem = z.infer<typeof blindagemSchema>;
+export type ManutencaoVeiculo = z.infer<typeof manutencaoVeiculoSchema>;
+export type Veiculo = z.infer<typeof veiculoSchema>;
+export type BuscaVeiculo = z.infer<typeof buscaVeiculoSchema>;

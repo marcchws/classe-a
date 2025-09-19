@@ -67,8 +67,24 @@ const data = {
         },
         {
           title: "Frota",
-          url: "/cadastros/frota",
           icon: Car,
+          items: [
+            {
+              title: "Categorias",
+              url: "/cadastros/frota/categorias",
+              icon: Car,
+            },
+            {
+              title: "Marcas e Modelos",
+              url: "/cadastros/frota/marcas-modelos",
+              icon: Car,
+            },
+            {
+              title: "Veículos",
+              url: "/cadastros/frota/veiculos",
+              icon: Car,
+            },
+          ],
         },
       ],
     },
@@ -197,6 +213,36 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarMenu>
                   {item.items.map((subItem) => {
                     const SubIcon = subItem.icon
+
+                    // Se o subitem tem subitens (como Frota)
+                    if (subItem.items && subItem.items.length > 0) {
+                      return (
+                        <div key={subItem.title} className="space-y-1">
+                          <div className="px-2 py-1 text-sm font-medium text-muted-foreground flex items-center gap-2">
+                            <SubIcon className="h-4 w-4" />
+                            {subItem.title}
+                          </div>
+                          {subItem.items.map((nestedItem: { title: string; url: string; icon: any }) => {
+                            const NestedIcon = nestedItem.icon
+                            return (
+                              <SidebarMenuItem key={nestedItem.title} className="ml-4">
+                                <SidebarMenuButton asChild>
+                                  <a
+                                    href={nestedItem.url}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <NestedIcon className="h-4 w-4" />
+                                    {nestedItem.title}
+                                  </a>
+                                </SidebarMenuButton>
+                              </SidebarMenuItem>
+                            )
+                          })}
+                        </div>
+                      )
+                    }
+
+                    // Subitem simples (sem subitens)
                     return (
                       <SidebarMenuItem key={subItem.title}>
                         <SidebarMenuButton asChild>
