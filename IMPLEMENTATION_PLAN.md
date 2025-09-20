@@ -51,37 +51,61 @@ src/
 
 ---
 
+## Regras de Manutenção e Atualização
+
+### **OBRIGATÓRIO: Atualização da Navegação**
+
+**IMPORTANTE:** Sempre que uma nova funcionalidade for implementada, é **OBRIGATÓRIO** atualizar:
+
+1. **Sidebar de Navegação** (`src/components/app-sidebar.tsx`)
+   - Adicionar o novo item no menu apropriado
+   - Manter a organização por categorias
+   - Incluir ícone e descrição adequados
+
+2. **Página Inicial** (`src/app/page.tsx`)
+   - Adicionar a funcionalidade na categoria correta
+   - Incluir nas ações rápidas se for uma funcionalidade muito utilizada
+   - Atualizar o status (ready/new/wip)
+   - Manter a busca funcionando
+
+**Motivo:** Garantir que o sistema sempre mantenha navegação funcional e que novas funcionalidades sejam facilmente acessíveis aos usuários.
+
+---
+
 ## Fases de Desenvolvimento
 
-### Fase 1: Fundação e Estrutura Base
+### Fase 1: Fundação e Estrutura Base ✅ **CONCLUÍDA**
 *   **Foco:** Configurar o alicerce do sistema, incluindo segurança, acesso e as entidades de dados mais básicas.
 *   **Funcionalidades:**
-    1.  **Autenticação:** Login e Recuperação de Senha (`@.context/Login e Recuperação de Senha.md`)
-    2.  **Gestão de Acesso:** 
-        *   Criação de Níveis de Acesso (`@.context/Criação de Níveis de Acesso.md`)
-        *   Criação de Usuários (`@.context/Criação de usuários.md`)
-    3.  **Estrutura de UI:** Implementar o layout principal da aplicação (menu lateral, cabeçalho) e componentes de UI básicos.
-    4.  **Onboarding:** Estrutura inicial do Tutorial/Onboarding (`@.context/Tutorial Onboarding.md`)
-    5.  **Insights:** Gerenciamento de Insights na tela inicial (`@.context/Gerenciamento de Insights.md`)
+    1.  **Autenticação:** Login e Recuperação de Senha (`@.context/Login e Recuperação de Senha.md`) ✅
+    2.  **Gestão de Acesso:** ✅
+        *   Criação de Níveis de Acesso (`@.context/Criação de Níveis de Acesso.md`) ✅
+        *   Criação de Usuários (`@.context/Criação de usuários.md`) ✅
+    3.  **Estrutura de UI:** Implementar o layout principal da aplicação (menu lateral, cabeçalho) e componentes de UI básicos. ✅
+    4.  **Onboarding:** Estrutura inicial do Tutorial/Onboarding (`@.context/Tutorial Onboarding.md`) ✅
+    5.  **Insights:** Gerenciamento de Insights na tela inicial (`@.context/Gerenciamento de Insights.md`) ✅
 
-### Fase 2: Módulos de Cadastros Essenciais
+### Fase 2: Módulos de Cadastros Essenciais ✅ **CONCLUÍDA**
 *   **Foco:** Implementar os CRUDs das entidades que são a base para todas as outras operações.
 *   **Funcionalidades:**
-    1.  **Clientes:** Cadastro de Clientes (PF, PJ, Parceiro) (`@.context/Cadastro de Clientes.md`)
-    2.  **Motoristas:** Cadastro de Motorista (`@.context/Cadastro de Motorista.md`)
-    3.  **Fornecedores:** Cadastro de Fornecedores (`@.context/Cadastro de Fornecedores.md`)
-    4.  **Frota (Veículos):**
-        *   Categorias de Veículos (`@.context/Categorias de Veículos.md`)
-        *   Marca/Modelo de Veículos (`@.context/Marca Modelo de Veículos.md`)
-        *   Cadastro de Veículo (`@.context/Cadastro de Veículo.md`)
+    1.  **Clientes:** Cadastro de Clientes (PF, PJ, Parceiro) (`@.context/Cadastro de Clientes.md`) ✅
+    2.  **Motoristas:** Cadastro de Motorista (`@.context/Cadastro de Motorista.md`) ✅
+    3.  **Fornecedores:** Cadastro de Fornecedores (`@.context/Cadastro de Fornecedores.md`) ✅
+    4.  **Frota (Veículos):** ✅
+        *   Categorias de Veículos (`@.context/Categorias de Veículos.md`) ✅
+        *   Marca/Modelo de Veículos (`@.context/Marca Modelo de Veículos.md`) ✅
+        *   Cadastro de Veículo (`@.context/Cadastro de Veículo.md`) ✅
 
-### Fase 3: Módulo Central de Operações
+### Fase 3: Módulo Central de Operações ✅ **CONCLUÍDA**
 *   **Foco:** Desenvolver a funcionalidade principal que conecta clientes, veículos e motoristas.
 *   **Funcionalidades:**
-    1.  **Contratos:** Cadastro de Contratos (Locação, Serviço, etc.) (`@.context/Cadastro de Contratos.md`)
-    2.  **Checklist:**
-        *   Cadastro de Checklist (Templates) (`@.context/Cadastro de Checklist.md`)
-        *   Gestão de Checklist (Execução na Entrada/Saída) (`@.context/Gestão de Checklist.md`)
+    1.  **Contratos:** Cadastro de Contratos (Locação, Serviço, etc.) (`@.context/Cadastro de Contratos.md`) ✅
+    2.  **Checklist:** ✅ **IMPLEMENTADO COMPLETAMENTE**
+        *   Cadastro de Checklist (Templates) (`@.context/Cadastro de Checklist.md`) ✅
+        *   Gestão de Checklist (Execução na Entrada/Saída) (`@.context/Gestão de Checklist.md`) ✅
+        *   Upload de fotos e documentos ✅
+        *   Cálculo automático de combustível ✅
+        *   Gestão de divergências e pendências financeiras ✅
     3.  **Alocação e Agendamento:**
         *   Agenda (`@.context/Agenda.md`)
         *   Escalação de Motorista (`@.context/Escalação de Motorista.md`)
@@ -114,3 +138,26 @@ src/
     3.  **Financeiro do App:**
         *   Valor a Receber (`@.context/App Motorista - Valor a Receber.md`)
         *   Contas em Aberto (`@.context/App Motorista - Contas em Aberto.md`)
+
+---
+
+## Status Atual do Projeto
+
+### ✅ **Fases Concluídas:**
+- **Fase 1:** Fundação e Estrutura Base
+- **Fase 2:** Módulos de Cadastros Essenciais  
+- **Fase 3:** Módulo Central de Operações (incluindo Gestão de Checklist)
+
+### 🔄 **Próximas Fases:**
+- **Fase 4:** Módulos Financeiros
+- **Fase 5:** Painéis, Dashboards e Relatórios
+- **Fase 6:** Aplicativo do Motorista
+
+### 📋 **Checklist de Manutenção:**
+- [ ] Sidebar atualizada com todas as funcionalidades
+- [ ] Página inicial organizada por categorias
+- [ ] Ações rápidas para funcionalidades mais usadas
+- [ ] Busca funcionando em todas as funcionalidades
+- [ ] Lint sem erros críticos
+- [ ] Build compilando corretamente
+- [ ] Navegação testada e funcional
