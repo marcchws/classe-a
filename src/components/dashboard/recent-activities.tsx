@@ -4,12 +4,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Car, UserPlus, Wrench, DollarSign, FileText, Eye } from "lucide-react";
+import { Car, UserPlus, Wrench, DollarSign, FileText, Eye, ClipboardList, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 interface Activity {
   id: string;
-  type: "contract" | "maintenance" | "customer" | "payment" | "vehicle";
+  type: "contract" | "maintenance" | "customer" | "payment" | "vehicle" | "checklist" | "divergence";
   title: string;
   description: string;
   timestamp: string;
@@ -60,19 +60,38 @@ export function RecentActivities() {
     },
     {
       id: "5",
+      type: "checklist",
+      title: "Checklist de entrada concluído",
+      description: "BMW X5 (ABC-1234) - 2 divergências identificadas",
+      timestamp: "há 4 horas",
+      user: "Maria Santos",
+      status: "warning",
+    },
+    {
+      id: "6",
+      type: "divergence",
+      title: "Divergência resolvida",
+      description: "Risco na porta direita - Cobrança de R$ 150 aprovada",
+      timestamp: "há 5 horas",
+      user: "João Silva",
+      amount: 150,
+      status: "success",
+    },
+    {
+      id: "7",
       type: "vehicle",
       title: "Veículo retornado",
       description: "Sprinter Van (XYZ-9876) finalizada limpeza e inspeção",
-      timestamp: "há 4 horas",
+      timestamp: "há 6 horas",
       user: "Carlos Oliveira",
       status: "info",
     },
     {
-      id: "6",
+      id: "8",
       type: "maintenance",
       title: "Manutenção concluída",
       description: "Mercedes S500 (DEF-5678) - Troca de óleo e filtros",
-      timestamp: "há 6 horas",
+      timestamp: "há 8 horas",
       status: "success",
     },
   ];
@@ -89,6 +108,10 @@ export function RecentActivities() {
         return <DollarSign className="h-4 w-4" />;
       case "vehicle":
         return <Car className="h-4 w-4" />;
+      case "checklist":
+        return <ClipboardList className="h-4 w-4" />;
+      case "divergence":
+        return <AlertTriangle className="h-4 w-4" />;
       default:
         return <FileText className="h-4 w-4" />;
     }

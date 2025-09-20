@@ -101,8 +101,19 @@ const data = {
         },
         {
           title: "Checklist",
-          url: "/operacional/checklist",
           icon: ClipboardList,
+          items: [
+            {
+              title: "Templates",
+              url: "/operacional/checklist",
+              icon: ClipboardList,
+            },
+            {
+              title: "Execuções",
+              url: "/operacional/checklist/execucoes",
+              icon: FileText,
+            },
+          ],
         },
         {
           title: "Agenda",
@@ -208,8 +219,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           // Itens com subitens
           return (
             <SidebarGroup key={item.title}>
-              <SidebarGroupLabel className="flex items-center gap-2">
-                <Icon className="h-4 w-4" />
+              <SidebarGroupLabel>
                 {item.title}
               </SidebarGroupLabel>
               <SidebarGroupContent>
@@ -220,16 +230,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     // Se o subitem tem subitens (como Frota)
                     if (subItem.items && subItem.items.length > 0) {
                       return (
-                        <div key={subItem.title} className="space-y-1">
-                          <div className="px-2 py-1 text-sm font-medium text-muted-foreground flex items-center gap-2">
-                            <SubIcon className="h-4 w-4" />
-                            {subItem.title}
-                          </div>
+                        <div key={subItem.title}>
+                          <SidebarMenuItem>
+                            <div className="px-2 py-1.5 text-sm font-medium text-sidebar-foreground/70">
+                              {subItem.title}
+                            </div>
+                          </SidebarMenuItem>
                           {subItem.items.map((nestedItem: { title: string; url: string; icon: React.ElementType }) => {
                             const NestedIcon = nestedItem.icon
                             return (
-                              <SidebarMenuItem key={nestedItem.title} className="ml-4">
-                                <SidebarMenuButton asChild>
+                              <SidebarMenuItem key={nestedItem.title}>
+                                <SidebarMenuButton asChild className="pl-6">
                                   <a
                                     href={nestedItem.url}
                                     className="flex items-center gap-2"
